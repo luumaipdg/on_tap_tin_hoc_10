@@ -1,0 +1,1448 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Tin học 10 - Bài 1: Thông tin và xử lí thông tin</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+  /* Reset */
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+  html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+  }
+  body {
+    margin: 0; padding: 0;
+    font-family: 'Inter', 'Arial', 'Segoe UI', sans-serif;
+    background-color: #001f3f; /* navy deep */
+    color: #f8f4ec; /* ivory */
+    line-height: 1.5;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  h1, h2, h3 {
+    margin: 0 0 0.3em 0;
+    font-weight: 600;
+    color: #f8f4ec;
+  }
+  h1 {
+    font-size: clamp(1.45rem, 3vw, 2.15rem);
+    line-height: 1.1;
+  }
+  h2 {
+    font-size: clamp(1.3rem, 2.6vw, 1.75rem);
+  }
+  h3 {
+    font-size: 1.25rem;
+  }
+  p, li, label {
+    font-size: 1rem;
+  }
+  small {
+    font-size: .875rem;
+    color: #a0a0a0;
+  }
+  a {
+    color: #40e0d0; /* turquoise accent */
+    text-decoration: none;
+  }
+  a:hover, a:focus {
+    text-decoration: underline;
+  }
+  main {
+    flex: 1 0 auto;
+    width: min(100% - 24px, 1000px);
+    max-width: 1000px;
+    margin: 1rem auto 2rem auto;
+    padding: 1rem clamp(0.8rem, 2vw, 1.5rem);
+    background: #222831; /* dark card */
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(64,224,208,0.3);
+  }
+  header {
+    background: #001f3f;
+    padding: 1rem clamp(0.8rem, 2vw, 1.5rem);
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.7);
+  }
+  header h1 {
+    margin-bottom: 0.2rem;
+  }
+  .accent-coral {
+    color: #ff6f61;
+  }
+  .btn {
+    font-size: 1.25rem;
+    font-weight: 600;
+    padding: 0.6em 1.2em;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    display: inline-block;
+    text-align: center;
+  }
+  .btn-primary {
+    background-color: #40e0d0;
+    color: #001f3f;
+  }
+  .btn-primary:disabled {
+    background-color: #3a7d7a;
+    cursor: not-allowed;
+    color: #ccc;
+  }
+  .btn-secondary {
+    background-color: #ff6f61;
+    color: #fff;
+  }
+  .btn-secondary:hover:not(:disabled),
+  .btn-primary:hover:not(:disabled) {
+    filter: brightness(1.1);
+  }
+  label {
+    display: block;
+    margin-bottom: 0.3em;
+    font-weight: 600;
+  }
+  input[type="text"] {
+    font-size: 1rem;
+    padding: 0.4em 0.6em;
+    border-radius: 8px;
+    border: 2px solid #40e0d0;
+    width: 100%;
+    max-width: 400px;
+    color: #001f3f;
+    font-weight: 600;
+  }
+  input[type="text"]:focus {
+    outline: none;
+    border-color: #ff6f61;
+    box-shadow: 0 0 6px #ff6f61;
+  }
+  .form-group {
+    margin-bottom: 1.2rem;
+  }
+  .form-inline {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: flex-end;
+  }
+  .form-inline > * {
+    flex: 1 1 200px;
+  }
+  nav {
+    background: #001f3f;
+    padding: 0.5rem 1rem;
+    border-radius: 0 0 12px 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.7);
+    margin-bottom: 1rem;
+  }
+  nav ul {
+    list-style: none;
+    margin: 0; padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+  }
+  nav li {
+    cursor: pointer;
+    padding: 0.3em 0.8em;
+    border-radius: 8px;
+    background: #222831;
+    color: #40e0d0;
+    font-weight: 600;
+    user-select: none;
+    transition: background-color 0.3s ease;
+  }
+  nav li.active,
+  nav li:hover {
+    background: #ff6f61;
+    color: #fff;
+  }
+  section.lesson {
+    margin-bottom: 2rem;
+  }
+  .card {
+    background: #30475e;
+    border-radius: 12px;
+    padding: 1rem 1.2rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 0 10px rgba(255,111,97,0.3);
+  }
+  .card h3 {
+    margin-top: 0;
+  }
+  .content-block {
+    margin-bottom: 1.5rem;
+  }
+  .content-block p {
+    margin-top: 0;
+  }
+  .content-block ul, .content-block ol {
+    margin-left: 1.5rem;
+  }
+  .content-block li {
+    margin-bottom: 0.5rem;
+  }
+  .quiz-container {
+    background: #222831;
+    border-radius: 12px;
+    padding: 1rem 1.2rem;
+    box-shadow: 0 0 15px rgba(64,224,208,0.4);
+  }
+  .question {
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+  .options {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1rem 0;
+  }
+  .options li {
+    margin-bottom: 0.8rem;
+  }
+  .options label {
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 0.5em 1em;
+    border-radius: 10px;
+    background: #30475e;
+    transition: background-color 0.3s ease;
+  }
+  .options input[type="radio"] {
+    transform: scale(1.3);
+    cursor: pointer;
+  }
+  .options label:hover {
+    background: #40e0d0;
+    color: #001f3f;
+  }
+  .options input[type="radio"]:focus + span {
+    outline: 3px solid #ff6f61;
+    outline-offset: 2px;
+  }
+  .btn-group {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  .progress-bar {
+    margin: 1rem 0;
+    display: flex;
+    gap: 0.3rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .progress-bar button {
+    width: 2.35rem;
+    height: 2.35rem;
+    font-weight: 600;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    background: #30475e;
+    color: #40e0d0;
+    transition: background-color 0.3s ease;
+  }
+  .progress-bar button.current {
+    background: #ff6f61;
+    color: #fff;
+    cursor: default;
+  }
+  .progress-bar button.answered {
+    background: #40e0d0;
+    color: #001f3f;
+  }
+  .progress-bar button:hover:not(.current):not(:disabled) {
+    background: #ff6f61;
+    color: #fff;
+  }
+  .result {
+    text-align: center;
+    margin-top: 1rem;
+  }
+  .result-score {
+    font-size: 2.6rem;
+    font-weight: 700;
+    color: #40e0d0;
+    margin-bottom: 0.3rem;
+  }
+  .result-summary {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+  }
+  .review-container {
+    max-height: 400px;
+    overflow-y: auto;
+    background: #222831;
+    border-radius: 12px;
+    padding: 1rem;
+    margin-top: 1rem;
+  }
+  .review-question {
+    margin-bottom: 1rem;
+  }
+  .review-question p {
+    margin: 0.3rem 0;
+  }
+  .review-correct {
+    color: #40e0d0;
+    font-weight: 700;
+  }
+  .review-wrong {
+    color: #ff6f61;
+    font-weight: 700;
+  }
+  .review-explanation {
+    font-style: italic;
+    color: #ccc;
+  }
+  /* Responsive */
+  @media (max-width: 480px) {
+    html {
+      font-size: 16px !important;
+    }
+    nav ul {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .form-inline {
+      flex-direction: column;
+    }
+    .form-inline > * {
+      flex: 1 1 100%;
+      max-width: 100%;
+    }
+    .progress-bar button {
+      width: 2.5rem;
+      height: 2.5rem;
+      font-size: .9rem;
+    }
+  }
+  /* Focus visible */
+  :focus-visible {
+    outline: 3px solid #ff6f61;
+    outline-offset: 2px;
+  }
+  /* Scrollbar for review */
+  .review-container::-webkit-scrollbar {
+    width: 8px;
+  }
+  .review-container::-webkit-scrollbar-thumb {
+    background-color: #40e0d0;
+    border-radius: 4px;
+  }
+  /* SVG icon style */
+  svg.icon {
+    width: 1.5em;
+    height: 1.5em;
+    vertical-align: middle;
+    fill: currentColor;
+  }
+
+  /* Điều chỉnh cho khung nhúng Google Sites và điện thoại */
+  body { overflow-x: hidden; }
+  main { min-width: 0; }
+  header { padding: 1.1rem .8rem; }
+  header p { margin: .5rem 0; }
+  .btn { font-size: 1rem; padding: .7em 1em; }
+  .btn-group { flex-wrap: wrap; gap: .6rem; }
+  nav ul { gap: .45rem; }
+  nav li { font-size: .9rem; padding: .6em .75em; }
+  .options label { font-size: 1rem; align-items: flex-start; }
+  .options input[type=radio] { margin-top: .3rem; flex-shrink: 0; }
+  .progress-bar { gap: .35rem; }
+  .progress-bar button { font-size: .82rem; }
+  input[type=text], select { font-size: 1rem; max-width: 100%; padding: .65rem; border-radius: 8px; }
+  select { color: #001f3f; background: white; }
+  .review-container { max-height: none; }
+  .card svg { max-width: 100%; height: auto; }
+  @media (max-width: 600px) {
+    main { margin: .65rem auto; padding: .8rem; }
+    nav { padding: .55rem; }
+    nav ul { flex-direction: row; justify-content: flex-start; }
+    nav li { flex: 1 1 125px; text-align: center; }
+    .card, .quiz-container { padding: .8rem; }
+    .btn-group .btn { flex: 1 1 90px; }
+    .form-inline { gap: .5rem; }
+    .form-inline > * { flex: 1 1 100%; }
+  }
+</style>
+<script>
+  // Utility: escape HTML to prevent XSS
+  function escapeHTML(str) {
+    return String(str ?? "").replace(/[&<>"']/g, function(m) {
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m];
+    });
+  }
+  // Generate unique session ID
+  function generateSessionId() {
+    return 'sess-' + Math.random().toString(36).slice(2, 11);
+  }
+  // Data schema version
+  const schemaVersion = "1.1.0";
+
+  // Lesson ID stable
+  const lessonId = "tin10-c1-b1";
+
+  // Storage namespace prefix
+  const storagePrefix = lessonId + "-";
+
+  // Question bank: 3 types (Nhận biết, Thông hiểu, Vận dụng), 10 questions each, total 30
+  // Each question: id, type, question, options[A-D], answerIndex(0-3), explanation
+  // Questions are realistic, non-repetitive, balanced answer positions
+  // Source: biên soạn độc lập dựa trên yêu cầu, không sao chép SGK nguyên văn
+
+  const questionBank = [
+    // Nhận biết (NB) 10 câu
+    {
+      id: "nb1",
+      type: "Nhận biết",
+      question: "Dữ liệu là gì trong tin học?",
+      options: [
+        "Ý nghĩa và hiểu biết rút ra từ dữ liệu",
+        "Biểu diễn có thể lưu, xử lí, truyền của thông tin",
+        "Quá trình xử lí thông tin",
+        "Thiết bị lưu trữ thông tin"
+      ],
+      answerIndex: 1,
+      explanation: "Dữ liệu là biểu diễn có thể lưu, xử lí, truyền của thông tin, còn thông tin là ý nghĩa, hiểu biết rút ra từ dữ liệu."
+    },
+    {
+      id: "nb2",
+      type: "Nhận biết",
+      question: "Thông tin khác dữ liệu ở điểm nào?",
+      options: [
+        "Thông tin là biểu diễn, dữ liệu là ý nghĩa",
+        "Thông tin là ý nghĩa, dữ liệu là biểu diễn",
+        "Thông tin và dữ liệu giống nhau",
+        "Thông tin không thể lưu trữ"
+      ],
+      answerIndex: 1,
+      explanation: "Thông tin là ý nghĩa, hiểu biết rút ra từ dữ liệu; dữ liệu là biểu diễn có thể lưu, xử lí, truyền."
+    },
+    {
+      id: "nb3",
+      type: "Nhận biết",
+      question: "Bit là gì?",
+      options: [
+        "Đơn vị lưu trữ lớn nhất",
+        "Đơn vị lưu trữ nhỏ nhất, biểu diễn 0 hoặc 1",
+        "Đơn vị lưu trữ bằng 8 byte",
+        "Đơn vị lưu trữ bằng 1024 byte"
+      ],
+      answerIndex: 1,
+      explanation: "Bit là đơn vị lưu trữ nhỏ nhất, biểu diễn giá trị 0 hoặc 1."
+    },
+    {
+      id: "nb4",
+      type: "Nhận biết",
+      question: "1 Byte bằng bao nhiêu bit theo quy ước nhị phân?",
+      options: [
+        "8 bit",
+        "10 bit",
+        "1024 bit",
+        "1 bit"
+      ],
+      answerIndex: 0,
+      explanation: "Theo quy ước nhị phân, 1 Byte = 8 bit."
+    },
+    {
+      id: "nb5",
+      type: "Nhận biết",
+      question: "1 KB (Kilobyte) bằng bao nhiêu Byte theo quy ước nhị phân?",
+      options: [
+        "1000 Byte",
+        "1024 Byte",
+        "8 Byte",
+        "1 Byte"
+      ],
+      answerIndex: 1,
+      explanation: "Theo quy ước nhị phân, 1 KB = 1024 Byte."
+    },
+    {
+      id: "nb6",
+      type: "Nhận biết",
+      question: "Thiết bị số có ưu điểm nào sau đây?",
+      options: [
+        "Lưu trữ và xử lí thông tin chính xác tuyệt đối",
+        "Lưu trữ, xử lí và truyền thông tin nhanh, hiệu quả",
+        "Không bao giờ bị lỗi phần cứng",
+        "Không cần nguồn điện"
+      ],
+      answerIndex: 1,
+      explanation: "Thiết bị số ưu việt ở khả năng lưu trữ, xử lí và truyền thông tin nhanh và hiệu quả, nhưng không phải luôn chính xác tuyệt đối."
+    },
+    {
+      id: "nb7",
+      type: "Nhận biết",
+      question: "Dữ liệu thiếu ngữ cảnh sẽ như thế nào?",
+      options: [
+        "Vẫn có thể hiểu đúng ý nghĩa",
+        "Không xác định được ý nghĩa chính xác",
+        "Luôn chính xác và đầy đủ",
+        "Không cần xử lí"
+      ],
+      answerIndex: 1,
+      explanation: "Dữ liệu thiếu ngữ cảnh không xác định được ý nghĩa chính xác."
+    },
+    {
+      id: "nb8",
+      type: "Nhận biết",
+      question: "Quá trình xử lí thông tin gồm các bước nào?",
+      options: [
+        "Tiếp nhận dữ liệu, xử lí, đưa kết quả, lưu trữ",
+        "Chỉ lưu trữ dữ liệu",
+        "Chỉ truyền dữ liệu",
+        "Chỉ xử lí dữ liệu"
+      ],
+      answerIndex: 0,
+      explanation: "Quá trình xử lí thông tin gồm tiếp nhận dữ liệu, xử lí, đưa kết quả và lưu trữ."
+    },
+    {
+      id: "nb9",
+      type: "Nhận biết",
+      question: "Thông tin có thể có bao nhiêu biểu diễn dữ liệu?",
+      options: [
+        "Chỉ một biểu diễn duy nhất",
+        "Nhiều biểu diễn khác nhau",
+        "Không có biểu diễn",
+        "Chỉ biểu diễn số"
+      ],
+      answerIndex: 1,
+      explanation: "Thông tin có thể có nhiều biểu diễn dữ liệu khác nhau."
+    },
+    {
+      id: "nb10",
+      type: "Nhận biết",
+      question: "Quy ước nhị phân trong lưu trữ dữ liệu là gì?",
+      options: [
+        "Dùng hệ thập phân để tính toán dung lượng",
+        "Dùng hệ cơ số 2, 1 KB = 1024 B",
+        "Dùng hệ thập phân, 1 KB = 1000 B",
+        "Dùng hệ cơ số 16"
+      ],
+      answerIndex: 1,
+      explanation: "Quy ước nhị phân dùng hệ cơ số 2, 1 KB = 1024 Byte."
+    },
+    // Thông hiểu (TH) 10 câu
+    {
+      id: "th1",
+      type: "Thông hiểu",
+      question: "Tại sao thông tin không thể xác định chính xác nếu chỉ có dữ liệu mà không có ngữ cảnh?",
+      options: [
+        "Dữ liệu luôn đầy đủ ý nghĩa",
+        "Ngữ cảnh giúp hiểu đúng ý nghĩa dữ liệu",
+        "Dữ liệu không cần ngữ cảnh để hiểu",
+        "Ngữ cảnh làm dữ liệu bị sai lệch"
+      ],
+      answerIndex: 1,
+      explanation: "Ngữ cảnh giúp hiểu đúng ý nghĩa dữ liệu, nếu thiếu thì thông tin không xác định chính xác."
+    },
+    {
+      id: "th2",
+      type: "Thông hiểu",
+      question: "Ưu điểm của lưu trữ dữ liệu bằng thiết bị số là gì?",
+      options: [
+        "Lưu trữ lâu dài, dễ dàng xử lí và truyền tải",
+        "Lưu trữ không cần nguồn điện",
+        "Không bao giờ bị mất dữ liệu",
+        "Dữ liệu không thể bị thay đổi"
+      ],
+      answerIndex: 0,
+      explanation: "Thiết bị số lưu trữ lâu dài, dễ dàng xử lí và truyền tải dữ liệu."
+    },
+    {
+      id: "th3",
+      type: "Thông hiểu",
+      question: "Bit và Byte khác nhau như thế nào?",
+      options: [
+        "Bit là 8 Byte",
+        "Byte là 8 Bit",
+        "Bit và Byte bằng nhau",
+        "Byte là đơn vị nhỏ hơn Bit"
+      ],
+      answerIndex: 1,
+      explanation: "1 Byte = 8 Bit."
+    },
+    {
+      id: "th4",
+      type: "Thông hiểu",
+      question: "Tại sao quy ước 1 KB = 1024 Byte được dùng trong tin học?",
+      options: [
+        "Vì 1024 là số gần 1000 nhất",
+        "Vì hệ nhị phân dùng cơ số 2, 1024 = 2^10",
+        "Vì 1024 là số nguyên tố",
+        "Vì 1024 là số chẵn"
+      ],
+      answerIndex: 1,
+      explanation: "Hệ nhị phân dùng cơ số 2, 1024 = 2^10 nên dùng làm đơn vị chuẩn."
+    },
+    {
+      id: "th5",
+      type: "Thông hiểu",
+      question: "Quá trình xử lí thông tin trong máy tính bắt đầu từ bước nào?",
+      options: [
+        "Lưu trữ dữ liệu",
+        "Xử lí dữ liệu",
+        "Tiếp nhận dữ liệu",
+        "Đưa kết quả"
+      ],
+      answerIndex: 2,
+      explanation: "Quá trình bắt đầu từ tiếp nhận dữ liệu."
+    },
+    {
+      id: "th6",
+      type: "Thông hiểu",
+      question: "Thông tin có thể được biểu diễn dưới dạng nào?",
+      options: [
+        "Chỉ dạng số",
+        "Dạng số, chữ, hình ảnh, âm thanh",
+        "Chỉ dạng chữ",
+        "Chỉ dạng hình ảnh"
+      ],
+      answerIndex: 1,
+      explanation: "Thông tin có thể biểu diễn dưới nhiều dạng: số, chữ, hình ảnh, âm thanh."
+    },
+    {
+      id: "th7",
+      type: "Thông hiểu",
+      question: "Tại sao thiết bị số không luôn đúng tuyệt đối?",
+      options: [
+        "Do lỗi phần mềm, phần cứng và giới hạn kỹ thuật",
+        "Do dữ liệu luôn sai",
+        "Do người dùng nhập sai",
+        "Do thiết bị không có bộ nhớ"
+      ],
+      answerIndex: 0,
+      explanation: "Thiết bị số có thể có lỗi phần mềm, phần cứng và giới hạn kỹ thuật nên không luôn đúng tuyệt đối."
+    },
+    {
+      id: "th8",
+      type: "Thông hiểu",
+      question: "Lưu trữ dữ liệu theo quy ước nhị phân có ưu điểm gì?",
+      options: [
+        "Tương thích với cấu trúc máy tính",
+        "Dễ nhầm lẫn với hệ thập phân",
+        "Không thể chuyển đổi sang hệ khác",
+        "Không có ưu điểm"
+      ],
+      answerIndex: 0,
+      explanation: "Quy ước nhị phân tương thích với cấu trúc máy tính dùng bit."
+    },
+    {
+      id: "th9",
+      type: "Thông hiểu",
+      question: "Phân biệt thông tin và dữ liệu giúp ích gì trong tin học?",
+      options: [
+        "Giúp xử lí và lưu trữ chính xác hơn",
+        "Không có ích gì",
+        "Chỉ dùng cho phần cứng",
+        "Chỉ dùng cho phần mềm"
+      ],
+      answerIndex: 0,
+      explanation: "Phân biệt giúp xử lí và lưu trữ dữ liệu chính xác, hiểu đúng ý nghĩa thông tin."
+    },
+    {
+      id: "th10",
+      type: "Thông hiểu",
+      question: "Đơn vị lưu trữ nào lớn hơn 1 GB theo quy ước nhị phân?",
+      options: [
+        "1 MB",
+        "1 TB",
+        "1 KB",
+        "1 bit"
+      ],
+      answerIndex: 1,
+      explanation: "1 TB (Terabyte) lớn hơn 1 GB (Gigabyte)."
+    },
+    // Vận dụng (VD) 10 câu
+    {
+      id: "vd1",
+      type: "Vận dụng",
+      question: "Một file ảnh có dung lượng 5 MB. Hỏi dung lượng này bằng bao nhiêu Byte theo quy ước nhị phân?",
+      options: [
+        "5 x 1000 x 1000 Byte",
+        "5 x 1024 x 1024 Byte",
+        "5 x 8 Byte",
+        "5 x 1024 Byte"
+      ],
+      answerIndex: 1,
+      explanation: "1 MB = 1024 x 1024 Byte theo quy ước nhị phân, nên 5 MB = 5 x 1024 x 1024 Byte."
+    },
+    {
+      id: "vd2",
+      type: "Vận dụng",
+      question: "Nếu một đoạn dữ liệu có 2048 Byte, hỏi nó bằng bao nhiêu KB theo quy ước nhị phân?",
+      options: [
+        "2 KB",
+        "2048 KB",
+        "0.5 KB",
+        "1 KB"
+      ],
+      answerIndex: 0,
+      explanation: "2048 Byte = 2048 / 1024 = 2 KB."
+    },
+    {
+      id: "vd3",
+      type: "Vận dụng",
+      question: "Một thiết bị số lưu trữ 2 TB. Hỏi dung lượng này bằng bao nhiêu GB theo quy ước nhị phân?",
+      options: [
+        "1024 GB",
+        "2000 GB",
+        "2 x 1000 GB",
+        "2 x 1024 GB"
+      ],
+      answerIndex: 3,
+      explanation: "1 TB = 1024 GB theo quy ước nhị phân, nên 2 TB = 2 x 1024 GB = 2048 GB."
+    },
+    {
+      id: "vd4",
+      type: "Vận dụng",
+      question: "Một thông tin có thể biểu diễn dưới các dạng dữ liệu khác nhau. Ví dụ nào sau đây không phải là biểu diễn dữ liệu của cùng một thông tin?",
+      options: [
+        "Chữ viết, âm thanh, hình ảnh",
+        "Số liệu, biểu đồ, văn bản",
+        "Hình ảnh, video, âm thanh",
+        "Số liệu, nhiệt độ, màu sắc"
+      ],
+      answerIndex: 3,
+      explanation: "Nhiệt độ và màu sắc là các loại thông tin khác nhau, không phải biểu diễn dữ liệu của cùng một thông tin."
+    },
+    {
+      id: "vd5",
+      type: "Vận dụng",
+      question: "Một học sinh nhập dữ liệu nhiệt độ 25°C vào máy tính. Dữ liệu này thuộc loại nào?",
+      options: [
+        "Dữ liệu số",
+        "Dữ liệu chữ",
+        "Dữ liệu âm thanh",
+        "Dữ liệu hình ảnh"
+      ],
+      answerIndex: 0,
+      explanation: "Giá trị đo nhiệt độ 25°C được biểu diễn chủ yếu bằng dữ liệu số kèm đơn vị đo."
+    },
+    {
+      id: "vd6",
+      type: "Vận dụng",
+      question: "Quá trình xử lí thông tin gồm các bước: Tiếp nhận dữ liệu, xử lí, đưa kết quả và lưu trữ. Hãy sắp xếp đúng thứ tự các bước này.",
+      options: [
+        "Xử lí, tiếp nhận, lưu trữ, đưa kết quả",
+        "Tiếp nhận, xử lí, đưa kết quả, lưu trữ",
+        "Lưu trữ, tiếp nhận, xử lí, đưa kết quả",
+        "Đưa kết quả, xử lí, tiếp nhận, lưu trữ"
+      ],
+      answerIndex: 1,
+      explanation: "Thứ tự đúng là: Tiếp nhận dữ liệu, xử lí, đưa kết quả, lưu trữ."
+    },
+    {
+      id: "vd7",
+      type: "Vận dụng",
+      question: "Một file văn bản có dung lượng 512 KB. Hỏi dung lượng này bằng bao nhiêu Byte theo quy ước nhị phân?",
+      options: [
+        "512 x 1000 Byte",
+        "512 x 1024 Byte",
+        "512 x 8 Byte",
+        "512 Byte"
+      ],
+      answerIndex: 1,
+      explanation: "1 KB = 1024 Byte, nên 512 KB = 512 x 1024 Byte."
+    },
+    {
+      id: "vd8",
+      type: "Vận dụng",
+      question: "Nếu một thiết bị lưu trữ có dung lượng 1 GB, hỏi nó bằng bao nhiêu MB theo quy ước nhị phân?",
+      options: [
+        "1000 MB",
+        "1024 MB",
+        "8 MB",
+        "1 MB"
+      ],
+      answerIndex: 1,
+      explanation: "1 GB = 1024 MB theo quy ước nhị phân."
+    },
+    {
+      id: "vd9",
+      type: "Vận dụng",
+      question: "Một đoạn dữ liệu có 8192 bit. Hỏi nó bằng bao nhiêu Byte theo quy ước nhị phân?",
+      options: [
+        "1024 Byte",
+        "8192 Byte",
+        "512 Byte",
+        "8 Byte"
+      ],
+      answerIndex: 0,
+      explanation: "1 Byte = 8 bit, nên 8192 bit = 8192 / 8 = 1024 Byte."
+    },
+    {
+      id: "vd10",
+      type: "Vận dụng",
+      question: "Tại sao máy tính không thể hiểu trực tiếp thông tin mà phải chuyển sang dữ liệu?",
+      options: [
+        "Máy tính chỉ xử lí được dữ liệu biểu diễn dưới dạng số nhị phân",
+        "Máy tính hiểu được mọi dạng thông tin",
+        "Thông tin và dữ liệu giống nhau",
+        "Máy tính không cần dữ liệu"
+      ],
+      answerIndex: 0,
+      explanation: "Máy tính chỉ xử lí được dữ liệu biểu diễn dưới dạng số nhị phân (bit)."
+    }
+  ];
+
+  // Ma trận đề minh họa: 15 câu, 5 câu mỗi trọng tâm (1) Thông tin/dữ liệu/quá trình, (2) Đơn vị lưu trữ, (3) Thiết bị số
+  // 6 NB, 5 TH, 4 VD; tổng 15 câu; điểm 10 = 10 * correct/15
+  // Lấy từ ngân hàng, không lặp câu, cân đối vị trí đáp án
+
+  const matrixDemo = {
+    title: "ĐỀ MINH HỌA",
+    description: "Đề minh họa gồm 15 câu theo ma trận trọng tâm bài học.",
+    questions: [
+      // Trọng tâm 1: Thông tin, dữ liệu, quá trình (5 câu)
+      "nb1","nb2","nb7","th1","th9",
+      // Trọng tâm 2: Đơn vị lưu trữ (5 câu)
+      "nb3","nb4","nb5","th4","vd1",
+      // Trọng tâm 3: Thiết bị số (5 câu)
+      "nb6","th7","th10","vd3","vd10"
+    ]
+  };
+
+  // State variables
+  let currentUser = null; // {name, class, sessionId}
+  let currentMode = "start"; // start, lesson, quiz, result, review, game
+  let currentQuestionIndex = 0;
+  let currentQuizQuestions = [];
+  let answers = []; // array of selected answerIndex or null
+  let history = []; // saved attempts
+  let zoomLevel = 16; // base font size in px
+  let currentQuizMode = "practice";
+  let gameTimer = null;
+
+  // Storage keys
+  function storageKey(key) {
+    if (!currentUser) return null;
+    return storagePrefix + encodeURIComponent(currentUser.class.toLowerCase() + "|" + currentUser.name.toLowerCase()) + "-" + key;
+  }
+
+  // Save history to localStorage
+  function saveHistory() {
+    if (!currentUser) return;
+    try {
+      const key = storageKey("history");
+      localStorage.setItem(key, JSON.stringify(history));
+    } catch(e) {
+      alert("Không thể lưu dữ liệu do bộ nhớ trình duyệt bị giới hạn hoặc bị vô hiệu hóa.");
+    }
+  }
+
+  // Load history from localStorage
+  function loadHistory() {
+    if (!currentUser) return [];
+    try {
+      const key = storageKey("history");
+      const data = localStorage.getItem(key);
+      if (data) { const parsed = JSON.parse(data); return Array.isArray(parsed) ? parsed : []; }
+      return [];
+    } catch(e) {
+      return [];
+    }
+  }
+
+  // Save current attempt snapshot
+  function saveAttempt() {
+    if (!currentUser) return;
+    const attempt = {
+      id: "att-" + Date.now(),
+      datetime: new Date().toISOString(),
+      user: {...currentUser},
+      lessonId,
+      mode: "quiz",
+      schemaVersion,
+      questions: currentQuizQuestions.map(q => ({
+        id: q.id,
+        type: q.type,
+        question: q.question,
+        options: q.options,
+        answerIndex: q.answerIndex,
+        explanation: q.explanation
+      })),
+      answers: [...answers],
+      score: calculateScore()
+    };
+    history.push(attempt);
+    saveHistory();
+  }
+
+  // Calculate score for current answers
+  function calculateScore() {
+    let correctCount = 0;
+    for(let i=0; i<currentQuizQuestions.length; i++) {
+      if (answers[i] === currentQuizQuestions[i].answerIndex) correctCount++;
+    }
+    return currentQuizQuestions.length ? Math.round(10 * correctCount / currentQuizQuestions.length * 100) / 100 : 0;
+  }
+
+  // Validate user input for name and class
+  function validateUserInput(name, className) {
+    if (!name || !className) return false;
+    // Trim and check length
+    if (name.trim().length === 0 || className.trim().length === 0) return false;
+    return true;
+  }
+
+  // Escape user input for display
+  function safeText(text) {
+    return escapeHTML(text.trim());
+  }
+
+  // Render functions
+  function renderStart() {
+    if (gameTimer) { clearTimeout(gameTimer); gameTimer = null; }
+    const container = document.getElementById("app");
+    container.innerHTML = `
+      <header>
+        <h1>Tin học 10 - Bài 1: Thông tin và xử lí thông tin</h1>
+        <p class="accent-coral" aria-live="polite">Nhập họ tên và lớp để bắt đầu ôn tập</p>
+      </header>
+      <main role="main" aria-label="Form nhập thông tin học sinh">
+        <form id="startForm" novalidate>
+          <div class="form-inline">
+            <div class="form-group">
+              <label for="inputName">Họ và Tên</label>
+              <input type="text" id="inputName" name="name" aria-required="true" aria-label="Nhập họ và tên học sinh" autocomplete="name" />
+            </div>
+            <div class="form-group">
+              <label for="inputClass">Lớp</label>
+              <input type="text" id="inputClass" name="class" aria-required="true" aria-label="Nhập lớp học sinh" autocomplete="off" />
+            </div>
+          </div>
+          <div style="text-align:center; margin-top:1rem;">
+            <button type="submit" class="btn btn-primary" id="btnStart" disabled aria-disabled="true" aria-label="Nút bắt đầu làm bài">Bắt đầu</button>
+          </div>
+        </form>
+        <p><small>Kết quả chỉ được lưu trên trình duyệt đang sử dụng, không tự gửi về giáo viên. Không nhập thông tin nhạy cảm.</small></p>
+      </main>
+    `;
+    const form = document.getElementById("startForm");
+    const inputName = document.getElementById("inputName");
+    const inputClass = document.getElementById("inputClass");
+    const btnStart = document.getElementById("btnStart");
+
+    function checkInputs() {
+      const valid = validateUserInput(inputName.value, inputClass.value);
+      btnStart.disabled = !valid;
+      btnStart.setAttribute("aria-disabled", (!valid).toString());
+    }
+    inputName.addEventListener("input", checkInputs);
+    inputClass.addEventListener("input", checkInputs);
+
+    form.addEventListener("submit", e => {
+      e.preventDefault();
+      if (!validateUserInput(inputName.value, inputClass.value)) return;
+      currentUser = {
+        name: safeText(inputName.value),
+        class: safeText(inputClass.value),
+        sessionId: generateSessionId()
+      };
+      history = loadHistory();
+      currentMode = "lesson";
+      renderLesson();
+    });
+  }
+
+  function renderMenu() {
+    return `
+      <nav role="navigation" aria-label="Menu điều hướng bài học">
+        <ul>
+          <li class="active" tabindex="0" role="button" aria-current="page" id="menuLesson">Bài 1: Thông tin và xử lí thông tin</li>
+          <li tabindex="0" role="button" id="menuQuiz">Luyện tập</li>
+          <li tabindex="0" role="button" id="menuTest">Đề minh họa</li>
+          <li tabindex="0" role="button" id="menuHistory">Lịch sử làm bài</li>
+          <li tabindex="0" role="button" id="menuGame">Trò chơi vận dụng</li>
+          <li tabindex="0" role="button" id="menuChangeUser">Đổi học sinh</li>
+          <li tabindex="0" role="button" id="menuZoom">Phóng chữ</li>
+        </ul>
+      </nav>
+    `;
+  }
+
+  function renderLesson() {
+    if (gameTimer) { clearTimeout(gameTimer); gameTimer = null; }
+    currentMode = "lesson";
+    const container = document.getElementById("app");
+    container.innerHTML = `
+      <header>
+        <h1>Tin học 10 - Bài 1: Thông tin và xử lí thông tin</h1>
+        <p>Học sinh: <strong>${currentUser.name}</strong> | Lớp: <strong>${currentUser.class}</strong></p>
+      </header>
+      ${renderMenu()}
+      <main role="main" aria-label="Nội dung bài học">
+        <section class="lesson" aria-labelledby="lessonTitle">
+          <h2 id="lessonTitle">1. Khái niệm thông tin và dữ liệu</h2>
+          <div class="card content-block">
+            <p><strong>Thông tin</strong> là ý nghĩa, hiểu biết được rút ra từ dữ liệu, giúp con người hiểu và ra quyết định.</p>
+            <p><strong>Dữ liệu</strong> là biểu diễn có thể lưu trữ, xử lí và truyền tải của thông tin, thường ở dạng số, chữ, hình ảnh, âm thanh.</p>
+            <p>Dữ liệu thiếu ngữ cảnh không thể xác định được ý nghĩa chính xác, do đó thông tin có nhiều biểu diễn dữ liệu khác nhau.</p>
+          </div>
+          <h2>2. Quá trình tiếp nhận và xử lí thông tin</h2>
+          <div class="card content-block" aria-label="Sơ đồ quá trình xử lí thông tin">
+            <svg role="img" aria-labelledby="svgTitle svgDesc" viewBox="0 0 760 155" width="100%" style="max-width:760px; height:auto; margin:auto; display:block; overflow:visible; font-family:Arial, sans-serif;">
+              <title id="svgTitle">Sơ đồ quá trình xử lí thông tin</title>
+              <desc id="svgDesc">Sơ đồ gồm 4 bước: Tiếp nhận dữ liệu, Xử lí, Đưa kết quả, Lưu trữ, nối với mũi tên</desc>
+              <defs>
+                <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+                  <path d="M0,0 L10,5 L0,10 L2,5 z" fill="#40e0d0" />
+                </marker>
+              </defs>
+              <rect x="10" y="35" width="170" height="80" rx="14" fill="#30475e" />
+              <text x="95" y="68" fill="#ffffff" font-size="19" font-weight="600" text-anchor="middle"><tspan x="95">Tiếp nhận</tspan><tspan x="95" dy="25">dữ liệu</tspan></text>
+              <rect x="205" y="35" width="145" height="80" rx="14" fill="#30475e" />
+              <text x="277" y="82" fill="#ffffff" font-size="21" font-weight="600" text-anchor="middle">Xử lí</text>
+              <rect x="375" y="35" width="170" height="80" rx="14" fill="#30475e" />
+              <text x="460" y="68" fill="#ffffff" font-size="19" font-weight="600" text-anchor="middle"><tspan x="460">Đưa</tspan><tspan x="460" dy="25">kết quả</tspan></text>
+              <rect x="570" y="35" width="175" height="80" rx="14" fill="#30475e" />
+              <text x="657" y="82" fill="#ffffff" font-size="21" font-weight="600" text-anchor="middle">Lưu trữ</text>
+              <line x1="181" y1="75" x2="202" y2="75" stroke="#40e0d0" stroke-width="3" marker-end="url(#arrow)" />
+              <line x1="351" y1="75" x2="372" y2="75" stroke="#40e0d0" stroke-width="3" marker-end="url(#arrow)" />
+              <line x1="546" y1="75" x2="567" y2="75" stroke="#40e0d0" stroke-width="3" marker-end="url(#arrow)" />
+            </svg>
+          </div>
+          <h2>3. Đơn vị lưu trữ thông tin</h2>
+          <div class="card content-block" aria-label="Sơ đồ quy đổi đơn vị lưu trữ">
+            <svg role="img" aria-labelledby="svgTitle2 svgDesc2" viewBox="0 0 600 160" width="100%" height="110" style="max-width:600px; margin:auto; display:block;">
+              <title id="svgTitle2">Sơ đồ quy đổi đơn vị lưu trữ</title>
+              <desc id="svgDesc2">Sơ đồ thể hiện các đơn vị: bit, Byte, KB, MB, GB, TB với mũi tên quy đổi</desc>
+              <defs>
+                <marker id="arrow2" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="strokeWidth">
+                  <path d="M0,0 L10,5 L0,10 L2,5 z" fill="#ff6f61" />
+                </marker>
+              </defs>
+              <rect x="10" y="50" width="80" height="50" rx="12" ry="12" fill="#30475e" />
+              <text x="50" y="80" fill="#f8f4ec" font-size="24" font-weight="600" text-anchor="middle" dominant-baseline="middle">bit</text>
+              <rect x="110" y="50" width="100" height="50" rx="12" ry="12" fill="#30475e" />
+              <text x="160" y="80" fill="#f8f4ec" font-size="24" font-weight="600" text-anchor="middle" dominant-baseline="middle">Byte</text>
+              <rect x="230" y="50" width="100" height="50" rx="12" ry="12" fill="#30475e" />
+              <text x="280" y="80" fill="#f8f4ec" font-size="24" font-weight="600" text-anchor="middle" dominant-baseline="middle">KB</text>
+              <rect x="350" y="50" width="100" height="50" rx="12" ry="12" fill="#30475e" />
+              <text x="400" y="80" fill="#f8f4ec" font-size="24" font-weight="600" text-anchor="middle" dominant-baseline="middle">MB</text>
+              <rect x="470" y="50" width="100" height="50" rx="12" ry="12" fill="#30475e" />
+              <text x="520" y="80" fill="#f8f4ec" font-size="24" font-weight="600" text-anchor="middle" dominant-baseline="middle">GB</text>
+              <rect x="590" y="50" width="100" height="50" rx="12" ry="12" fill="#30475e" style="display:none"/>
+              <text x="640" y="80" fill="#f8f4ec" font-size="24" font-weight="600" text-anchor="middle" dominant-baseline="middle" style="display:none">TB</text>
+              <line x1="90" y1="75" x2="110" y2="75" stroke="#ff6f61" stroke-width="4" marker-end="url(#arrow2)" />
+              <line x1="210" y1="75" x2="230" y2="75" stroke="#ff6f61" stroke-width="4" marker-end="url(#arrow2)" />
+              <line x1="330" y1="75" x2="350" y2="75" stroke="#ff6f61" stroke-width="4" marker-end="url(#arrow2)" />
+              <line x1="450" y1="75" x2="470" y2="75" stroke="#ff6f61" stroke-width="4" marker-end="url(#arrow2)" />
+            </svg>
+            <p><small>Quy ước nhị phân: 1 Byte = 8 bit; 1 KB = 1024 Byte; 1 MB = 1024 KB; 1 GB = 1024 MB; 1 TB = 1024 GB.</small></p>
+          </div>
+          <h2>4. Ưu việt và giới hạn của thiết bị số</h2>
+          <div class="card content-block">
+            <ul>
+              <li><strong>Ưu việt:</strong> Lưu trữ, xử lí, truyền tải thông tin nhanh, chính xác, dung lượng lớn.</li>
+              <li><strong>Giới hạn:</strong> Có thể bị lỗi phần cứng, phần mềm; không phải lúc nào cũng chính xác tuyệt đối.</li>
+              <li>Máy tính xử lí dữ liệu nhị phân, cần chuyển đổi thông tin sang dữ liệu phù hợp.</li>
+            </ul>
+          </div>
+        </section>
+      </main>
+    `;
+    attachMenuHandlers();
+    setActiveMenu();
+  }
+
+  function setActiveMenu() {
+    const activeId = ({lesson:'menuLesson',quiz: currentQuizMode === 'demo' ? 'menuTest' : 'menuQuiz',result: currentQuizMode === 'demo' ? 'menuTest' : 'menuQuiz',review: currentQuizMode === 'demo' ? 'menuTest' : 'menuQuiz',history:'menuHistory',game:'menuGame'})[currentMode];
+    document.querySelectorAll('nav li[role="button"]').forEach(item => {
+      const active = item.id === activeId;
+      item.classList.toggle('active', active);
+      if (active) item.setAttribute('aria-current','page');
+      else item.removeAttribute('aria-current');
+    });
+  }
+
+  function attachMenuHandlers() {
+    document.querySelectorAll("nav li[role=button]").forEach(item => {
+      item.addEventListener("keydown", event => {
+        if (event.key === "Enter" || event.key === " ") { event.preventDefault(); item.click(); }
+      });
+    });
+    document.getElementById("menuLesson").onclick = () => {
+      currentMode = "lesson";
+      renderLesson();
+    };
+    document.getElementById("menuQuiz").onclick = () => {
+      startQuiz("practice");
+    };
+    document.getElementById("menuTest").onclick = () => {
+      startQuiz("demo");
+    };
+    document.getElementById("menuHistory").onclick = () => {
+      renderHistory();
+    };
+    document.getElementById("menuGame").onclick = () => {
+      renderGame();
+    };
+    document.getElementById("menuChangeUser").onclick = () => {
+      if(confirm("Xác nhận đổi học sinh? Dữ liệu chưa lưu sẽ mất.")) {
+        currentUser = null;
+        currentMode = "start";
+        renderStart();
+      }
+    };
+    document.getElementById("menuZoom").onclick = () => {
+      zoomLevel += 2;
+      if (zoomLevel > 22) zoomLevel = 16;
+      document.documentElement.style.fontSize = zoomLevel + "px";
+      alert("Phóng chữ: " + zoomLevel + "px");
+    };
+  }
+
+  // Start quiz: mode = "practice" or "demo"
+  function startQuiz(mode) {
+    if (gameTimer) { clearTimeout(gameTimer); gameTimer = null; }
+    currentMode = "quiz";
+    currentQuizMode = mode;
+    currentQuestionIndex = 0;
+    answers = [];
+    if (mode === "practice") {
+      // Lấy toàn bộ ngân hàng câu hỏi
+      currentQuizQuestions = [...questionBank];
+    } else if (mode === "demo") {
+      // Lấy câu theo ma trận minh họa
+      currentQuizQuestions = matrixDemo.questions.map(id => questionBank.find(q => q.id === id)).filter(Boolean);
+    }
+    // Khởi tạo câu trả lời null
+    answers = new Array(currentQuizQuestions.length).fill(null);
+    renderQuiz();
+  }
+
+  function renderQuiz() {
+    const container = document.getElementById("app");
+    const q = currentQuizQuestions[currentQuestionIndex];
+    const userAnswer = answers[currentQuestionIndex];
+    container.innerHTML = `
+      <header>
+        <h1>Tin học 10 - Bài 1: Thông tin và xử lí thông tin</h1>
+        <p>Học sinh: <strong>${currentUser.name}</strong> | Lớp: <strong>${currentUser.class}</strong></p>
+      </header>
+      ${renderMenu()}
+      <main role="main" aria-label="Luyện tập trắc nghiệm">
+        <section class="quiz-container" aria-live="polite" aria-atomic="true">
+          <div class="question" id="questionText" tabindex="0">
+            Câu ${currentQuestionIndex + 1} / ${currentQuizQuestions.length} (${q.type}):<br />
+            ${escapeHTML(q.question)}
+          </div>
+          <ul class="options" role="radiogroup" aria-labelledby="questionText">
+            ${q.options.map((opt, i) => `
+              <li>
+                <label for="opt${i}">
+                  <input type="radio" name="answer" id="opt${i}" value="${i}" aria-checked="${userAnswer === i}" ${userAnswer === i ? "checked" : ""} />
+                  <span>${escapeHTML(opt)}</span>
+                </label>
+              </li>
+            `).join("")}
+          </ul>
+          <div class="btn-group" role="group" aria-label="Điều hướng câu hỏi">
+            <button class="btn btn-secondary" id="btnPrev" ${currentQuestionIndex === 0 ? "disabled aria-disabled=true" : ""} aria-label="Câu trước">Trước</button>
+            <button class="btn btn-secondary" id="btnNext" ${currentQuestionIndex === currentQuizQuestions.length - 1 ? "disabled aria-disabled=true" : ""} aria-label="Câu tiếp">Tiếp</button>
+            <button class="btn btn-primary" id="btnSubmit" aria-label="Nộp bài">Nộp</button>
+          </div>
+          <div class="progress-bar" role="list" aria-label="Tiến độ làm bài">
+            ${currentQuizQuestions.map((_, i) => `
+              <button type="button" class="${i === currentQuestionIndex ? "current" : answers[i] !== null ? "answered" : ""}" aria-current="${i === currentQuestionIndex ? "step" : "false"}" aria-label="Câu ${i+1}" data-index="${i}">${i+1}</button>
+            `).join("")}
+          </div>
+        </section>
+      </main>
+    `;
+    attachMenuHandlers();
+    setActiveMenu();
+    attachQuizHandlers();
+  }
+
+  function attachQuizHandlers() {
+    const options = document.querySelectorAll("input[name='answer']");
+    options.forEach(opt => {
+      opt.addEventListener("change", e => {
+        const val = parseInt(e.target.value);
+        answers[currentQuestionIndex] = val;
+        updateProgressBar();
+      });
+    });
+    document.getElementById("btnPrev").onclick = () => {
+      if (currentQuestionIndex > 0) {
+        currentQuestionIndex--;
+        renderQuiz();
+      }
+    };
+    document.getElementById("btnNext").onclick = () => {
+      if (currentQuestionIndex < currentQuizQuestions.length - 1) {
+        currentQuestionIndex++;
+        renderQuiz();
+      }
+    };
+    document.getElementById("btnSubmit").onclick = () => {
+      if (answers.includes(null)) {
+        if (!confirm("Bạn còn câu hỏi chưa trả lời. Bạn có chắc muốn nộp bài?")) return;
+      }
+      saveAttempt();
+      renderResult();
+    };
+    // Progress bar buttons
+    document.querySelectorAll(".progress-bar button").forEach(btn => {
+      btn.onclick = () => {
+        const idx = parseInt(btn.dataset.index);
+        if (idx !== currentQuestionIndex) {
+          currentQuestionIndex = idx;
+          renderQuiz();
+        }
+      };
+    });
+  }
+
+  function updateProgressBar() {
+    document.querySelectorAll(".progress-bar button").forEach((btn, i) => {
+      btn.classList.toggle("answered", answers[i] !== null);
+    });
+  }
+
+  function renderResult() {
+    currentMode = "result";
+    const container = document.getElementById("app");
+    const score = calculateScore();
+    const total = currentQuizQuestions.length;
+    const correctCount = answers.reduce((acc, ans, i) => acc + (ans === currentQuizQuestions[i].answerIndex ? 1 : 0), 0);
+    const wrongCount = answers.filter((a,i) => a !== null && a !== currentQuizQuestions[i].answerIndex).length;
+    const emptyCount = answers.filter(a => a === null).length;
+    container.innerHTML = `
+      <header>
+        <h1>Tin học 10 - Bài 1: Thông tin và xử lí thông tin</h1>
+        <p>Học sinh: <strong>${currentUser.name}</strong> | Lớp: <strong>${currentUser.class}</strong></p>
+      </header>
+      ${renderMenu()}
+      <main role="main" aria-label="Kết quả làm bài">
+        <section class="result" tabindex="0" aria-live="polite" aria-atomic="true">
+          <div class="result-score" aria-label="Điểm số">${score} / 10</div>
+          <div class="result-summary">
+            Đúng: ${correctCount} &nbsp;&nbsp; Sai: ${wrongCount} &nbsp;&nbsp; Chưa trả lời: ${emptyCount}
+          </div>
+          <div style="text-align:center;">
+            <button class="btn btn-primary" id="btnReview" aria-label="Xem lại bài làm">Xem lại</button>
+            <button class="btn btn-secondary" id="btnRetry" aria-label="Làm lại bài">Làm lại</button>
+          </div>
+          <div id="reviewContainer" class="review-container" hidden aria-live="polite" aria-atomic="true"></div>
+        </section>
+      </main>
+    `;
+    attachMenuHandlers();
+    setActiveMenu();
+    document.getElementById("btnReview").onclick = () => {
+      renderReview();
+    };
+    document.getElementById("btnRetry").onclick = () => {
+      startQuiz(currentQuizMode);
+    };
+  }
+
+  function renderReview() {
+    currentMode = "review";
+    const container = document.getElementById("reviewContainer");
+    container.hidden = false;
+    container.innerHTML = currentQuizQuestions.map((q,i) => {
+      const userAns = answers[i];
+      const correctAns = q.answerIndex;
+      const isCorrect = userAns === correctAns;
+      return `
+        <div class="review-question" tabindex="0" aria-label="Câu ${i+1} ${isCorrect ? 'đúng' : 'sai'}">
+          <p><strong>Câu ${i+1}:</strong> ${escapeHTML(q.question)}</p>
+          <p>Đáp án của bạn: <span class="${isCorrect ? 'review-correct' : 'review-wrong'}">${userAns !== null ? escapeHTML(q.options[userAns]) : '<em>Chưa trả lời</em>'}</span></p>
+          <p>Đáp án đúng: <span class="review-correct">${escapeHTML(q.options[correctAns])}</span></p>
+          <p class="review-explanation">Giải thích: ${escapeHTML(q.explanation)}</p>
+        </div>
+      `;
+    }).join("");
+    container.setAttribute("tabindex", "-1");
+    container.focus();
+  }
+
+  // Lịch sử làm bài
+  function renderHistory() {
+    if (gameTimer) { clearTimeout(gameTimer); gameTimer = null; }
+    currentMode = "history";
+    const container = document.getElementById("app");
+    const hist = loadHistory();
+    container.innerHTML = `
+      <header>
+        <h1>Lịch sử làm bài - Tin học 10 - Bài 1</h1>
+        <p>Học sinh: <strong>${currentUser.name}</strong> | Lớp: <strong>${currentUser.class}</strong></p>
+      </header>
+      ${renderMenu()}
+      <main role="main" aria-label="Lịch sử làm bài">
+        <section class="lesson">
+          <h2>Lịch sử các lần làm bài</h2>
+          ${hist.length === 0 ? `<p>Chưa có dữ liệu lịch sử làm bài.</p>` : `
+            <ul>
+              ${hist.map((att, i) => `
+                <li>
+                  <button class="btn btn-secondary" data-index="${i}" aria-label="Xem chi tiết lần làm bài ngày ${att.datetime}">
+                    Lần làm bài ngày ${new Date(att.datetime).toLocaleString()}
+                  </button>
+                </li>
+              `).join("")}
+            </ul>
+            <div id="historyDetail" class="review-container" aria-live="polite" aria-atomic="true" style="margin-top:1rem;"></div>
+            <div style="text-align:center; margin-top:1rem;">
+              <button class="btn btn-primary" id="btnClearHistory" aria-label="Xóa lịch sử làm bài">Xóa lịch sử</button>
+            </div>
+          `}
+        </section>
+      </main>
+    `;
+    attachMenuHandlers();
+    setActiveMenu();
+    if (hist.length > 0) {
+      const buttons = container.querySelectorAll("ul button");
+      const detail = document.getElementById("historyDetail");
+      buttons.forEach(btn => {
+        btn.onclick = () => {
+          const idx = parseInt(btn.dataset.index);
+          const att = hist[idx];
+          detail.innerHTML = att.questions.map((q,i) => {
+            const userAns = att.answers[i];
+            const correctAns = q.answerIndex;
+            const isCorrect = userAns === correctAns;
+            return `
+              <div class="review-question" tabindex="0" aria-label="Câu ${i+1} ${isCorrect ? 'đúng' : 'sai'}">
+                <p><strong>Câu ${i+1}:</strong> ${escapeHTML(q.question)}</p>
+                <p>Đáp án của bạn: <span class="${isCorrect ? 'review-correct' : 'review-wrong'}">${userAns !== null ? escapeHTML(q.options[userAns]) : '<em>Chưa trả lời</em>'}</span></p>
+                <p>Đáp án đúng: <span class="review-correct">${escapeHTML(q.options[correctAns])}</span></p>
+                <p class="review-explanation">Giải thích: ${escapeHTML(q.explanation)}</p>
+              </div>
+            `;
+          }).join("");
+          detail.setAttribute("tabindex", "-1");
+          detail.focus();
+        };
+      });
+      document.getElementById("btnClearHistory").onclick = () => {
+        if(confirm("Bạn có chắc chắn muốn xóa toàn bộ lịch sử làm bài của học sinh này?")) {
+          history = [];
+          saveHistory();
+          renderHistory();
+        }
+      };
+    }
+  }
+
+  // Trò chơi vận dụng: phân loại 6 tình huống tiếp nhận/xử lí/đưa kết quả/lưu trữ
+  function renderGame() {
+    currentMode = "game";
+    if (gameTimer) { clearTimeout(gameTimer); gameTimer = null; }
+    const container = document.getElementById("app");
+    container.innerHTML = `
+      <header>
+        <h1>Trò chơi vận dụng - Phân loại tình huống xử lí thông tin</h1>
+        <p>Học sinh: <strong>${currentUser.name}</strong> | Lớp: <strong>${currentUser.class}</strong></p>
+      </header>
+      ${renderMenu()}
+      <main role="main" aria-label="Trò chơi phân loại tình huống">
+        <section class="lesson">
+          <h2>Phân loại các tình huống xử lí thông tin</h2>
+          <p>Chọn đúng loại quá trình: <strong>Tiếp nhận dữ liệu</strong>, <strong>Xử lí</strong>, <strong>Đưa kết quả</strong>, <strong>Lưu trữ</strong></p>
+          <div class="card content-block" id="gameContainer" aria-live="polite" aria-atomic="true">
+            <p id="gameSituation" style="font-weight:600; font-size:32px;"></p>
+            <div style="margin-top:1rem;">
+              <select id="gameSelect" aria-label="Chọn loại quá trình">
+                <option value="" disabled selected>Chọn loại quá trình</option>
+                <option value="Tiếp nhận dữ liệu">Tiếp nhận dữ liệu</option>
+                <option value="Xử lí">Xử lí</option>
+                <option value="Đưa kết quả">Đưa kết quả</option>
+                <option value="Lưu trữ">Lưu trữ</option>
+              </select>
+            </div>
+            <div style="margin-top:1rem;">
+              <button class="btn btn-primary" id="btnCheckGame" aria-label="Kiểm tra lựa chọn">Kiểm tra</button>
+              <button class="btn btn-secondary" id="btnResetGame" aria-label="Làm lại trò chơi">Làm lại</button>
+            </div>
+            <p id="gameFeedback" style="margin-top:1rem; font-weight:600;"></p>
+          </div>
+        </section>
+      </main>
+    `;
+    attachMenuHandlers();
+    setActiveMenu();
+    const situations = [
+      {text: "Nhập nhiệt độ đo được từ cảm biến vào máy tính.", answer: "Tiếp nhận dữ liệu"},
+      {text: "Máy tính tính toán trung bình nhiệt độ từ các dữ liệu đã nhập.", answer: "Xử lí"},
+      {text: "Hiển thị kết quả nhiệt độ trung bình trên màn hình.", answer: "Đưa kết quả"},
+      {text: "Lưu trữ dữ liệu nhiệt độ vào bộ nhớ để sử dụng sau.", answer: "Lưu trữ"},
+      {text: "Nhập ảnh chụp vào máy tính để xử lí.", answer: "Tiếp nhận dữ liệu"},
+      {text: "Máy tính nén ảnh để giảm dung lượng lưu trữ.", answer: "Xử lí"}
+    ];
+    let currentSituationIndex = 0;
+    const gameSituation = document.getElementById("gameSituation");
+    const gameSelect = document.getElementById("gameSelect");
+    const btnCheckGame = document.getElementById("btnCheckGame");
+    const btnResetGame = document.getElementById("btnResetGame");
+    const gameFeedback = document.getElementById("gameFeedback");
+
+    function loadSituation() {
+      gameSituation.textContent = situations[currentSituationIndex].text;
+      gameSelect.value = "";
+      gameFeedback.textContent = "";
+      gameSelect.focus();
+    }
+    btnCheckGame.onclick = () => {
+      if (!gameSelect.value) {
+        alert("Vui lòng chọn loại quá trình trước khi kiểm tra.");
+        gameSelect.focus();
+        return;
+      }
+      if (gameSelect.value === situations[currentSituationIndex].answer) {
+        gameFeedback.style.color = "#40e0d0";
+        gameFeedback.textContent = "Chính xác! 🎉";
+        currentSituationIndex++;
+        if (currentSituationIndex >= situations.length) {
+          gameTimer = setTimeout(() => {
+            alert("Bạn đã hoàn thành trò chơi!");
+            currentSituationIndex = 0;
+            loadSituation();
+          }, 1000);
+        } else {
+          gameTimer = setTimeout(loadSituation, 1200);
+        }
+      } else {
+        gameFeedback.style.color = "#ff6f61";
+        gameFeedback.textContent = "Sai rồi, hãy thử lại.";
+      }
+    };
+    btnResetGame.onclick = () => {
+      if (gameTimer) { clearTimeout(gameTimer); gameTimer = null; }
+      currentSituationIndex = 0;
+      loadSituation();
+    };
+    loadSituation();
+  }
+
+  // On load
+  window.onload = () => {
+    renderStart();
+  };
+</script>
+</head>
+<body>
+<div id="app" role="application" aria-live="polite" aria-atomic="true"></div>
+</body>
+</html>
